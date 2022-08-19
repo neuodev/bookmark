@@ -225,7 +225,7 @@ pub struct Paragraph {
     text: String,
     inline_tokens: Vec<InlineToken>,
 }
-
+/// Should match any text without in special tokens (ex: # or *)
 impl Paragraph {
     pub fn new(line: &str) -> Option<Self> {
         let mut text = line.trim().to_string();
@@ -243,12 +243,14 @@ impl Paragraph {
     }
 }
 
+/// Support for <ol> </ol> or <ul> </ul>
 #[derive(Debug)]
 pub enum ListType {
     Ordered,
     Unordered,
 }
 
+/// Internal representation of <li> tag
 #[derive(Debug)]
 pub struct ListItem {
     text: String,
@@ -256,6 +258,7 @@ pub struct ListItem {
 }
 
 impl ListItem {
+    /// Create new list item
     fn new(line: &str) -> Self {
         let text = line.trim().to_string();
         let inline_tokens = InlineToken::extract(&text);
@@ -284,6 +287,7 @@ impl ListItem {
 }
 
 #[derive(Debug)]
+/// Collection of list items
 pub struct List {
     list_type: ListType,
     items: Vec<ListItem>,
