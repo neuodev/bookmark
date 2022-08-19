@@ -1,12 +1,12 @@
-# Heading 1
+# Heading 1 [link](www.youtube.com) [Google](www.google.com) **bold** **other bold** _italic_ _other italic_ `code1` `code2`
 
-## Heading 2
+## Heading 2 **bold**
 
-### Heading 3
+### Heading 3 _italic_
 
 #### Heading 4 [link](www.youtube.com)
 
-##### Heading 5
+##### Heading 5 `code`
 
 ###### Heading 6
 

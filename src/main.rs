@@ -17,12 +17,6 @@ fn main() {
     let spaces = Regex::new(r"^\s{2,}").unwrap();
 
     for (idx, line) in lines.enumerate() {
-
-        if line.len() == 0 {
-            println!("{} is empty", idx);
-            continue;
-        }
-        println!("{} -> {}", idx, line);
         Heading::new(line);
         // if let Some(caps) = re.captures(line) {
         //     println!("Re: {:?}", caps);
