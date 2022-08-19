@@ -393,3 +393,42 @@ impl CodeBlock {
         }), end_idx)
     }
 }
+
+#[derive(Debug)]
+pub struct QuoteLine {
+    text: String,
+    inline_token: Vec<InlineToken>
+}
+
+impl QuoteLine {
+    fn new(text: &str) -> Self {
+        QuoteLine { text: text.to_string(), inline_token: vec![] }
+    }
+}
+
+#[derive(Debug)]
+pub struct Quote {
+    lines: Vec<QuoteLine>
+}
+
+impl Quote {
+    pub fn new(lines: &Vec<&str>, idx: usize) -> (Option<Self>, usize) {
+        let line  = lines[idx].trim();
+
+        if !line.starts_with(">") {
+            return (None, idx)
+        }
+
+        let mut end_idx = idx;
+        loop {
+            end_idx += 1;
+            if end_idx >= lines.len() || !lines[end_idx].starts_with(">") {break;}
+        }
+
+
+        let quote_lines = lines[idx..end_idx].into_iter().map(|&l| QuoteLine::new(l)).collect();
+        (Some(Quote{
+            lines: quote_lines,
+        }), end_idx)
+    }
+}

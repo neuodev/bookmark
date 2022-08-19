@@ -7,23 +7,25 @@ use regex::Regex;
 use std::fs;
 use tokens::{List, Paragraph};
 
-use crate::tokens::{Heading, CodeBlock};
+use crate::tokens::{Heading, CodeBlock, Quote};
 
 fn main() {
-    let file = fs::read_to_string("./examples/code.md").unwrap();
+    let file = fs::read_to_string("./examples/quotes.md").unwrap();
 
     let mut lines = file
         .split("\n")
         .filter(|l| l != &"\r")
         .collect::<Vec<&str>>();
 
-    println!("{:#?}", lines);
+    // println!("{:#?}", lines);
     let mut idx = 0;
     while idx < lines.len() {
-        let (code_block, end_idx) = CodeBlock::new(&lines, idx);
+        let (quote, end_idx) = Quote::new(&lines, idx);
 
-        if code_block.is_some() {
+        if quote.is_some() {
             idx = end_idx;
+
+            println!("{:#?}", quote.unwrap())
         } 
 
         idx += 1;
