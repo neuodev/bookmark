@@ -1,35 +1,35 @@
+#![allow(dead_code)]
+
 mod node;
 mod tokens;
 
 use regex::Regex;
 use std::fs;
-use tokens::Paragraph;
+use tokens::{List, Paragraph};
 
 use crate::tokens::Heading;
 
 fn main() {
-    let file = fs::read_to_string("./README.md").unwrap();
+    let file = fs::read_to_string("./examples/list.md").unwrap();
 
-    let lines = file.split("\n");
+    let mut lines = file.split("\n").filter(|l| l != &"\r").collect::<Vec<&str>>();
 
-    let spaces = Regex::new(r"^\s{2,}").unwrap();
+    let spaces = Regex::new(r"^\s*").unwrap();
+    println!("{:#?}", lines);
+    let mut idx = 0;
+    while idx < lines.len() {
+        let line = lines[idx];
 
-    for (idx, line) in lines.enumerate() {
-        if let Some(h) = Heading::new(line) {
-            println!("{:#?}", h);
-        } else if let Some(p) = Paragraph::new(line) {
-            println!("{:#?}", p);
+        if line.trim().starts_with("-") {
+            println!("{}", line);
+            let (list, i) = List::new(&lines, idx);
+
+            if list.is_some() {
+                println!("{:#?} {i}", list.unwrap());
+            }
+            idx = i;
         }
-        // if let Some(caps) = re.captures(line) {
-        //     println!("Re: {:?}", caps);
-        // }
 
-        // if let Some(bold) = bold.captures(line) {
-        //     println!("Bold match: {:?}", bold);
-        // }
-
-        // if let Some(spaces) = spaces.captures(line) {
-        //     println!("Spaces: {:?}", spaces);
-        // }
+        idx += 1;
     }
 }

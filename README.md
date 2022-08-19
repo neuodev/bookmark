@@ -28,21 +28,21 @@ this is an image ![alt text](./bookmark.png)
 ## Unordered list
 
 - This is the first line
-- Thsi is the second line
+- This is the second line
 
 ## Nested unoredered list
 
-- This is firs level
+- I am level 1 with `code`
 
-  - second level
-    - third level
-      - 4th level
+  - second level with `bold`
+    - third level 1 with _italic_
+      - 4th level 1 with [link](some link here)
 
-- This is firs level
+- How are you
 
-  - second level
-    - third level
-      - 4th level
+  - I am good
+    - I am going to pray
+      - Last item
 
 ## Ordered List
 

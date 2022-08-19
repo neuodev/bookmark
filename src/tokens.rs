@@ -65,7 +65,7 @@ pub enum InlineToken {
 }
 
 impl InlineToken {
-    fn extract(text: &mut String) -> Vec<InlineToken> {
+    fn extract(text: &String) -> Vec<InlineToken> {
         // Match any one of these
         let re_set = [
             r"\[(?P<link_text>[^\]]+)\]\((?P<href>[^\]]+)\)", // Link
@@ -243,19 +243,105 @@ impl Paragraph {
     }
 }
 
-
+#[derive(Debug)]
 pub enum ListType {
     Ordered,
-    Unordered
+    Unordered,
 }
 
+#[derive(Debug)]
 pub struct ListItem {
-    list: Box<List>,
+    list: Box<Option<List>>,
     text: String,
-    raw: String
+    inline_tokens: Vec<InlineToken>,
 }
 
+impl ListItem {
+    fn new(lines: &Vec<&str>, mut idx: usize) -> (Self, usize) {
+        println!("new list item");
+        let list_item = lines[idx].trim().to_string();
+        let inline_tokens = InlineToken::extract(&list_item);
+        let text = InlineToken::mask_tokens(list_item, &inline_tokens);
+        let text = text.replace("-", "").trim().to_string();
+        // Match white space at the start of a string
+        let re = Regex::new(r"^\s*").unwrap(); 
+        let curr_caps = re.captures(&lines[idx]).unwrap();
+        let next_caps = re.captures(&lines[idx + 1]).unwrap();
+        let curr_item_spaces = &curr_caps[0];
+        let next_item_space = &next_caps[0];
+
+        println!("C:{} N:{}", curr_item_spaces.len(), next_item_space.len());
+        println!("CL:{} NL:{}", lines[idx].trim(), lines[idx + 1].trim());
+
+        let mut list: Option<List> = None;
+        idx = idx + 1;
+
+
+        if next_item_space.len() > curr_item_spaces.len() {
+            let (nested_list, curr_idx) = List::new(lines, idx);
+            list = nested_list;
+            idx = curr_idx;
+        }
+
+        (
+            Self {
+                list: Box::new(list),
+                text,
+                inline_tokens,
+            },
+            idx,
+        )
+    }
+}
+
+#[derive(Debug)]
 pub struct List {
     list_type: ListType,
-    list_item: ListItem
+    items: Vec<ListItem>,
 }
+
+impl List {
+    pub fn new(lines: &Vec<&str>, mut idx: usize) -> (Option<Self>, usize) {
+        println!("new list");
+        let mut items = vec![];
+
+        loop {
+            if idx >= lines.len() {
+                break;
+            }
+
+            let line = lines[idx];
+
+            if line.trim().len() == 0 {
+                idx += 1;
+                continue;
+            }
+
+            if !line.trim().starts_with("-") {
+                break;
+            }
+
+            let (item, i) = ListItem::new(lines, idx);
+            items.push(item);
+
+            idx = i
+        }
+        if items.len() != 0 {
+            return (
+                Some(Self {
+                    list_type: ListType::Unordered,
+                    items: items,
+                }),
+                idx,
+            );
+        }
+
+        (None, idx)
+    }
+}
+
+
+// - This is first level 2
+//   - second level 2
+//     - third level 2
+//       - 4th level 2
