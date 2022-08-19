@@ -4,7 +4,7 @@
 
 ### Heading 3
 
-#### Heading 4
+#### Heading 4 [link](www.youtube.com)
 
 ##### Heading 5
 
@@ -51,3 +51,6 @@ some date 2001-04-17
 **some bold text**
 
 **italic**
+
+this is link [some text](www.youtube.com)
+this is an image ![alt text](./bookmark.png)
