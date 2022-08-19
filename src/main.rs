@@ -2,8 +2,8 @@ mod node;
 mod tokens;
 
 use regex::Regex;
-use tokens::Paragraph;
 use std::fs;
+use tokens::Paragraph;
 
 use crate::tokens::Heading;
 

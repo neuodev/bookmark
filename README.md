@@ -14,6 +14,17 @@ This is normal paragraph!
 
 This is paragraph with **bold text** and _italic text_
 
+some date 2001-04-17
+
+**some bold text**
+
+**italic**
+
+this is link [some text](www.youtube.com)
+this is an image ![alt text](./bookmark.png)
+
+[single inline text](www.google.com)
+
 ## Unordered list
 
 - This is the first line
@@ -45,14 +56,3 @@ This is paragraph with **bold text** and _italic text_
 
    1. Actix
    2. Turi
-
-some date 2001-04-17
-
-**some bold text**
-
-**italic**
-
-this is link [some text](www.youtube.com)
-this is an image ![alt text](./bookmark.png)
-
-[single inline text](www.google.com)

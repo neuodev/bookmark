@@ -61,7 +61,7 @@ pub enum InlineToken {
         alt: String,
         src: String,
         raw: String,
-    }
+    },
 }
 
 impl InlineToken {
@@ -72,15 +72,14 @@ impl InlineToken {
             r"\*\*(?P<bold>[^\*]+)\*\*",                      // Bold text
             r"_(?P<italic>[^_]+)_",                           // Italic text
             r"`(?P<code>[^`]+)`",                             // Inline code
-            r"!\[(?P<alt>[^\]]+)\]\((?P<src>[^\]]+)\)" // Image
+            r"!\[(?P<alt>[^\]]+)\]\((?P<src>[^\]]+)\)",       // Image
         ];
 
         let re = Regex::new(&re_set.join("|")).unwrap();
 
         let tokens = re
             .captures_iter(text)
-            .enumerate()
-            .map(|(idx, caps)| {
+            .map(|caps| {
                 let raw = caps[0].to_string();
 
                 let href = InlineToken::get_name(&caps, "href");
@@ -101,7 +100,7 @@ impl InlineToken {
                     InlineToken::Image {
                         src: img_src.unwrap(),
                         alt: img_alt.unwrap(),
-                        raw
+                        raw,
                     }
                 } else if bold.is_some() {
                     InlineToken::Bold {
@@ -129,7 +128,6 @@ impl InlineToken {
         tokens
     }
 
-
     fn get_name(caps: &Captures, name: &str) -> Option<String> {
         if caps.name(name).is_some() {
             return Some(caps[name].to_string());
@@ -141,10 +139,10 @@ impl InlineToken {
     fn get_raw(&self) -> &String {
         match &self {
             InlineToken::Link { raw, .. } => raw,
-            InlineToken::Bold {  raw, .. } => raw,
+            InlineToken::Bold { raw, .. } => raw,
             InlineToken::Code { raw, .. } => raw,
             InlineToken::Italic { raw, .. } => raw,
-            InlineToken::Image { raw, .. } => raw
+            InlineToken::Image { raw, .. } => raw,
         }
     }
 
@@ -222,23 +220,42 @@ impl Heading {
     }
 }
 
-
 #[derive(Debug)]
 pub struct Paragraph {
     text: String,
-    inline_tokens: Vec<InlineToken>
+    inline_tokens: Vec<InlineToken>,
 }
 
 impl Paragraph {
     pub fn new(line: &str) -> Option<Self> {
         let mut text = line.trim().to_string();
         if text.len() == 0 {
-            return None
+            return None;
         }
 
         let inline_tokens = InlineToken::extract(&mut text);
         let text = InlineToken::mask_tokens(text, &inline_tokens);
 
-        Some(Paragraph { text, inline_tokens })
+        Some(Paragraph {
+            text,
+            inline_tokens,
+        })
     }
+}
+
+
+pub enum ListType {
+    Ordered,
+    Unordered
+}
+
+pub struct ListItem {
+    list: Box<List>,
+    text: String,
+    raw: String
+}
+
+pub struct List {
+    list_type: ListType,
+    list_item: ListItem
 }
