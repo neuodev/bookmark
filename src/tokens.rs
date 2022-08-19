@@ -1,4 +1,6 @@
-use regex::Regex;
+use std::borrow::Cow;
+
+use regex::{Captures, Match, Regex};
 
 #[derive(Debug)]
 pub enum BlockToken {
@@ -38,55 +40,96 @@ pub enum BlockToken {
 
 #[derive(Debug)]
 pub enum InlineToken {
-    Link { href: String, text: String }, // reg: \[(?P<text>[^\]]+)\]\((?P<href>[^\]]+)\)
-    Bold(String),
-    Code(String),
-    Italic(String),
+    Link {
+        href: String,
+        text: String,
+        raw: String,
+    }, // reg: \[(?P<text>[^\]]+)\]\((?P<href>[^\]]+)\)
+    Bold {
+        value: String,
+        raw: String,
+    },
+    Code {
+        value: String,
+        raw: String,
+    },
+    Italic {
+        value: String,
+        raw: String,
+    },
 }
 
 impl InlineToken {
-    fn extract(text: &str) -> Vec<InlineToken> {
-        // Match links
-        let re_link = Regex::new(r"\[(?P<text>[^\]]+)\]\((?P<href>[^\]]+)\)").unwrap();
-        let re_bold = Regex::new(r"\*\*(?P<text>[^\*]+)\*\*").unwrap();
-        let re_italic = Regex::new(r"_(?P<text>[^_]+)_").unwrap();
-        let re_code = Regex::new(r"`(?P<text>[^`]+)`").unwrap();
-
+    fn extract(text: &mut String) -> Vec<InlineToken> {
+        // Match any one of these
         let re_set = [
-            (re_link, "link"),
-            (re_bold, "bold"),
-            (re_italic, "italic"),
-            (re_code, "code"),
+            r"\[(?P<link_text>[^\]]+)\]\((?P<href>[^\]]+)\)", // Link
+            r"\*\*(?P<bold>[^\*]+)\*\*",                      // Bold text
+            r"_(?P<italic>[^_]+)_",                           // Italic text
+            r"`(?P<code>[^`]+)`",                             // Inline code
         ];
 
-        let mut result: Vec<InlineToken> = vec![];
+        let re = Regex::new(&re_set.join("|")).unwrap();
 
-        re_set.into_iter().for_each(|(re, name)| {
-            let mut tokens = re
-                .captures_iter(text)
-                .map(|caps| {
-                    let text = (&caps["text"]).to_string();
-                    match name {
-                        "link" => InlineToken::Link {
-                            href: (&caps["href"]).to_string(),
-                            text,
-                        },
-                        "bold" => InlineToken::Bold(text),
-                        "italic" => InlineToken::Italic(text),
-                        "code" => InlineToken::Code(text),
-                        _ => {
-                            panic!("unsupported type")
-                        }
+        let tokens = re
+            .captures_iter(text)
+            .enumerate()
+            .map(|(idx, caps)| {
+                let raw = caps[0].to_string();
+
+                let href = InlineToken::get_name(&caps, "href");
+                let link_text = InlineToken::get_name(&caps, "link_text");
+                let bold = InlineToken::get_name(&caps, "bold");
+                let italic = InlineToken::get_name(&caps, "italic");
+                let code = InlineToken::get_name(&caps, "code");
+
+                if href.is_some() && link_text.is_some() {
+                    InlineToken::Link {
+                        href: href.unwrap(),
+                        text: link_text.unwrap(),
+                        raw,
                     }
-                })
-                .collect::<Vec<InlineToken>>();
+                } else if bold.is_some() {
+                    InlineToken::Bold {
+                        value: bold.unwrap(),
+                        raw,
+                    }
+                } else if italic.is_some() {
+                    InlineToken::Italic {
+                        value: italic.unwrap(),
+                        raw,
+                    }
+                } else if code.is_some() {
+                    InlineToken::Code {
+                        value: code.unwrap(),
+                        raw,
+                    }
+                } else {
+                    // Should never happen
+                    // Regex should never match other names
+                    panic!("Regex maching unsupported type")
+                }
+            })
+            .collect();
 
-            result.append(&mut tokens)
-        });
+        tokens
+    }
 
-        println!("{:#?}", result);
+    fn get_name(caps: &Captures, name: &str) -> Option<String> {
+        if caps.name(name).is_some() {
+            return Some(caps[name].to_string());
+        }
 
-        result
+        None
+    }
+
+    fn get_raw(&self) -> &String {
+        match &self {
+            InlineToken::Link { raw, .. } => raw,
+            InlineToken::Bold {  raw, .. } => raw,
+            InlineToken::Code { raw, .. } => raw,
+            InlineToken::Italic { raw, .. } => raw,
+        }
     }
 }
 
@@ -120,19 +163,9 @@ impl HeadingType {
         }
         None
     }
-
-    pub fn prefix(&self) -> &'static str {
-        match self {
-            HeadingType::H1 => "#",
-            HeadingType::H2 => "##",
-            HeadingType::H3 => "###",
-            HeadingType::H4 => "####",
-            HeadingType::H5 => "#####",
-            HeadingType::H6 => "######",
-        }
-    }
 }
 
+#[derive(Debug)]
 pub struct Heading {
     h_type: HeadingType,
     text: String,
@@ -151,8 +184,17 @@ impl Heading {
         let re = Regex::new(r"#{1,6}\s+(?P<text>.+)").unwrap();
 
         if let Some(caps) = re.captures(line) {
-            let text = &caps["text"];
-            InlineToken::extract(text);
+            let mut text = (&caps["text"]).to_string();
+            let inline_tokens = InlineToken::extract(&mut text);
+
+            inline_tokens.iter().enumerate().for_each(|(idx, token)| {
+                text = text.replace(token.get_raw(), &format!("<${}>", idx + 1))
+            });
+            return Some(Heading {
+                h_type,
+                text,
+                inline_tokens,
+            });
         }
 
         None

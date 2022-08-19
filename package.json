@@ -1,0 +1,15 @@
+{
+  "name": "neuron",
+  "version": "1.0.0",
+  "description": "This is normal paragraph!",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cargo watch -x \"run --bin bookmark\"",
+    "prod": "cargo build --release",
+    "build": "cargo build",
+    "fmt": "rustfmt ./src/main.rs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

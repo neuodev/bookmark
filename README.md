@@ -1,4 +1,4 @@
-# Heading 1 [link](www.youtube.com) [Google](www.google.com) **bold** **other bold** _italic_ _other italic_ `code1` `code2`
+# Heading 1 `code2` [link](www.youtube.com) [Google](www.google.com) **bold** **other bold** _italic_ _other italic_ `code1`
 
 ## Heading 2 **bold**
 
