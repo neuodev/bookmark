@@ -351,3 +351,45 @@ impl List {
         }
     }
 }
+
+#[derive(Debug)]
+pub struct CodeBlock {
+    lang: String,
+    lines: Vec<String>
+}
+
+impl CodeBlock {
+    pub fn new(lines: &Vec<&str>, idx: usize) -> (Option<Self>, usize) {
+        let line = lines[idx];
+        // Regex to match the first line in a code block 
+        let re = Regex::new(r"`{3}(?P<lang>[^\n]+)").unwrap();
+        
+        let caps = match re.captures(line) {
+            Some(c) => c,
+            None => return (None, idx)
+        };
+
+        let mut end_idx = idx;
+
+        loop {
+            end_idx+= 1;
+            if end_idx >= lines.len() {
+                break;
+            }
+
+
+            if lines[end_idx] == "```" {
+                break;
+            }
+        }
+
+        let code_lines = (&lines[idx+1..end_idx]).into_iter().map(|l| l.to_string()).collect();
+        
+
+        
+        (Some(CodeBlock {
+            lang: caps["lang"].to_string(),
+            lines: code_lines,
+        }), end_idx)
+    }
+}

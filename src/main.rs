@@ -7,10 +7,10 @@ use regex::Regex;
 use std::fs;
 use tokens::{List, Paragraph};
 
-use crate::tokens::Heading;
+use crate::tokens::{Heading, CodeBlock};
 
 fn main() {
-    let file = fs::read_to_string("./examples/list.md").unwrap();
+    let file = fs::read_to_string("./examples/code.md").unwrap();
 
     let mut lines = file
         .split("\n")
@@ -20,14 +20,11 @@ fn main() {
     println!("{:#?}", lines);
     let mut idx = 0;
     while idx < lines.len() {
-        let line = lines[idx];
+        let (code_block, end_idx) = CodeBlock::new(&lines, idx);
 
-        let (list, i) = List::new(&lines, idx);
-
-        if list.is_some() {
-            println!("{:#?} {i}", list.unwrap());
-        }
-        idx = i;
+        if code_block.is_some() {
+            idx = end_idx;
+        } 
 
         idx += 1;
     }
