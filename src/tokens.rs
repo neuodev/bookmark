@@ -131,6 +131,14 @@ impl InlineToken {
             InlineToken::Italic { raw, .. } => raw,
         }
     }
+
+    fn mask_tokens(mut text: String, tokens: &Vec<InlineToken>) -> String {
+        tokens.iter().enumerate().for_each(|(idx, token)| {
+            text = text.replace(token.get_raw(), &format!("<${}>", idx + 1))
+        });
+
+        text
+    }
 }
 
 #[derive(Debug)]
@@ -187,16 +195,25 @@ impl Heading {
             let mut text = (&caps["text"]).to_string();
             let inline_tokens = InlineToken::extract(&mut text);
 
-            inline_tokens.iter().enumerate().for_each(|(idx, token)| {
-                text = text.replace(token.get_raw(), &format!("<${}>", idx + 1))
-            });
             return Some(Heading {
                 h_type,
-                text,
+                text: InlineToken::mask_tokens(text, &inline_tokens),
                 inline_tokens,
             });
         }
 
         None
+    }
+}
+
+
+pub struct Paragraph {
+    text: String,
+    inline_tokens: Vec<InlineToken>
+}
+
+impl Paragraph {
+    pub fn new(line: &str) {
+        // let inline_tokens = 
     }
 }
