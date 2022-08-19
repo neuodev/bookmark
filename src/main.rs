@@ -2,6 +2,7 @@ mod node;
 mod tokens;
 
 use regex::Regex;
+use tokens::Paragraph;
 use std::fs;
 
 use crate::tokens::Heading;
@@ -16,6 +17,8 @@ fn main() {
     for (idx, line) in lines.enumerate() {
         if let Some(h) = Heading::new(line) {
             println!("{:#?}", h);
+        } else if let Some(p) = Paragraph::new(line) {
+            println!("{:#?}", p);
         }
         // if let Some(caps) = re.captures(line) {
         //     println!("Re: {:?}", caps);

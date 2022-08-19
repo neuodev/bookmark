@@ -54,3 +54,5 @@ some date 2001-04-17
 
 this is link [some text](www.youtube.com)
 this is an image ![alt text](./bookmark.png)
+
+[single inline text](www.google.com)
