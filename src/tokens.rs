@@ -251,46 +251,35 @@ pub enum ListType {
 
 #[derive(Debug)]
 pub struct ListItem {
-    list: Box<Option<List>>,
     text: String,
     inline_tokens: Vec<InlineToken>,
 }
 
 impl ListItem {
-    fn new(lines: &Vec<&str>, mut idx: usize) -> (Self, usize) {
-        println!("new list item");
-        let list_item = lines[idx].trim().to_string();
-        let inline_tokens = InlineToken::extract(&list_item);
-        let text = InlineToken::mask_tokens(list_item, &inline_tokens);
-        let text = text.replace("-", "").trim().to_string();
-        // Match white space at the start of a string
-        let re = Regex::new(r"^\s*").unwrap(); 
-        let curr_caps = re.captures(&lines[idx]).unwrap();
-        let next_caps = re.captures(&lines[idx + 1]).unwrap();
-        let curr_item_spaces = &curr_caps[0];
-        let next_item_space = &next_caps[0];
-
-        println!("C:{} N:{}", curr_item_spaces.len(), next_item_space.len());
-        println!("CL:{} NL:{}", lines[idx].trim(), lines[idx + 1].trim());
-
-        let mut list: Option<List> = None;
-        idx = idx + 1;
-
-
-        if next_item_space.len() > curr_item_spaces.len() {
-            let (nested_list, curr_idx) = List::new(lines, idx);
-            list = nested_list;
-            idx = curr_idx;
+    fn new(line: &str) -> Self {
+        let text = line.trim().to_string();
+        let inline_tokens = InlineToken::extract(&text);
+        let text = InlineToken::mask_tokens(text, &inline_tokens);
+        let text = ListItem::trim(&text);
+        Self {
+            text,
+            inline_tokens,
         }
+    }
 
-        (
-            Self {
-                list: Box::new(list),
-                text,
-                inline_tokens,
-            },
-            idx,
-        )
+    /// Remove list markers like `* | - | 1. | 2.`
+    fn trim(line: &str) -> String {
+        let list_type = List::get_list_type(line).unwrap();
+        match list_type {
+            ListType::Unordered => line.replace("-", "").trim().into(),
+            ListType::Ordered => {
+                // Match every line that starts with a number 1. | 2. | ....
+                let re = Regex::new(r"^(?P<idx>[0-9]+)\.").unwrap();
+                let caps = re.captures(line).unwrap();
+                let raw_token = &caps[0];
+                line.replace(raw_token, "").trim().into()
+            }
+        }
     }
 }
 
@@ -304,6 +293,7 @@ impl List {
     pub fn new(lines: &Vec<&str>, mut idx: usize) -> (Option<Self>, usize) {
         println!("new list");
         let mut items = vec![];
+        let mut list_type = ListType::Ordered;
 
         loop {
             if idx >= lines.len() {
@@ -317,19 +307,24 @@ impl List {
                 continue;
             }
 
-            if !line.trim().starts_with("-") {
-                break;
-            }
+            // if !line.trim().starts_with("-") {
+            //     break;
+            // }
 
-            let (item, i) = ListItem::new(lines, idx);
+            list_type = match List::get_list_type(&line) {
+                Some(t) => t,
+                None => break,
+            };
+
+            let item = ListItem::new(&line);
             items.push(item);
 
-            idx = i
+            idx += 1;
         }
         if items.len() != 0 {
             return (
                 Some(Self {
-                    list_type: ListType::Unordered,
+                    list_type,
                     items: items,
                 }),
                 idx,
@@ -338,10 +333,17 @@ impl List {
 
         (None, idx)
     }
+
+    fn get_list_type(line: &str) -> Option<ListType> {
+        let line = line.trim();
+        // Match every line that starts with a number 1. | 2. | ....
+        let re = Regex::new(r"^(?P<idx>[0-9]+)\.").unwrap();
+
+        match line {
+            line if line.starts_with('-') => Some(ListType::Unordered),
+            line if line.starts_with('*') => Some(ListType::Unordered),
+            line if re.captures(line).is_some() => Some(ListType::Ordered),
+            _ => None,
+        }
+    }
 }
-
-
-// - This is first level 2
-//   - second level 2
-//     - third level 2
-//       - 4th level 2
