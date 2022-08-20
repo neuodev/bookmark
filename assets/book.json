@@ -1,4 +1,7 @@
 {
   "bookname": "",
-  "author": ""
+  "author": "",
+  "rootDir": "./src",
+  "distDir": "./dist",
+  "pages": []
 }

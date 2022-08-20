@@ -6,6 +6,10 @@ use std::{fs, path::Path};
 pub struct Config {
     bookname: String,
     author: String,
+    #[serde(rename = "rootDir")]
+    root_dir: String,
+    #[serde(rename = "distDir")]
+    dist_dir: String,
     pages: Vec<Page>
 }
 
