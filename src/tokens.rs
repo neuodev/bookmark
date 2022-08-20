@@ -421,7 +421,6 @@ impl CodeBlock {
         )
     }
 
-
     pub fn into_html(&self) -> String {
         let code = self.lines.join("<br/>");
 
@@ -450,7 +449,7 @@ impl QuoteLine {
         let quote = InlineToken::into_html(&self.text, &self.inline_tokens);
 
         format!("<p>{}<p>", quote)
-    }  
+    }
 }
 
 #[derive(Debug)]
@@ -482,7 +481,12 @@ impl Quote {
     }
 
     pub fn into_html(&self) -> String {
-        let quote = self.lines.iter().map(|l| l.into_html()).collect::<Vec<String>>().join("\r");
+        let quote = self
+            .lines
+            .iter()
+            .map(|l| l.into_html())
+            .collect::<Vec<String>>()
+            .join("\r");
 
         format!("<quote>{}<quote>", quote)
     }
@@ -498,7 +502,6 @@ impl LineBreak {
         }
         None
     }
-
 
     pub fn into_html(&self) -> String {
         "<br/>".into()

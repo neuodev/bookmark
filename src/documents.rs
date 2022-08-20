@@ -1,6 +1,7 @@
 use crate::{
     node::Node,
-    tokens::{CodeBlock, Heading, LineBreak, List, Paragraph, Quote}, utils::replace_by_tag,
+    tokens::{CodeBlock, Heading, LineBreak, List, Paragraph, Quote},
+    utils::replace_by_tag,
 };
 use std::{fs, path::Path};
 
@@ -43,7 +44,12 @@ impl Document {
     }
 
     pub fn into_html(&self) -> String {
-        let html_body = self.nodes.iter().map(|n| n.into_html()).collect::<Vec<String>>().join("\n");
+        let html_body = self
+            .nodes
+            .iter()
+            .map(|n| n.into_html())
+            .collect::<Vec<String>>()
+            .join("\n");
 
         let html_doc = include_str!("../assets/html/base.html");
 
@@ -55,5 +61,4 @@ impl Document {
 
         fs::write(path, html).unwrap();
     }
-
 }

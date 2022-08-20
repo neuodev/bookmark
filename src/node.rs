@@ -11,7 +11,6 @@ pub enum Node {
     LineBreak(LineBreak),
 }
 
-
 impl Node {
     pub fn into_html(&self) -> String {
         match self {
