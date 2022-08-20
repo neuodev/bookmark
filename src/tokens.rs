@@ -1,7 +1,7 @@
 use regex::{Captures, Regex};
 
 #[derive(Debug)]
-pub enum InlineToken {
+pub enum Inline&Token {
     Link {
         href: String,
         text: String,
@@ -446,7 +446,11 @@ impl QuoteLine {
         }
     }
 
-    
+    pub fn into_html(&self) -> String {
+        let quote = InlineToken::into_html(&self.text, &self.inline_tokens);
+
+        format!("<p>{}<p>", quote)
+    }  
 }
 
 #[derive(Debug)]
@@ -478,7 +482,9 @@ impl Quote {
     }
 
     pub fn into_html(&self) -> String {
-        
+        let quote = self.lines.iter().map(|l| l.into_html()).collect::<Vec<String>>().join("\r")
+
+        format!("<quote>{}<quote>", quote)
     }
 }
 
