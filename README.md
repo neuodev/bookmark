@@ -1,10 +1,24 @@
 # Bookmark
 
+Create static websites out of markdown
+
 <p align="center">
   <img src="./bookmark.png" alt="bookmark"/>
 </p>
 
-## Useage
+# Useage
+
+## Start new project
+
+```bash
+$ bookmark new <my-book> # Should see a prompt asking for the book and author names
+my-book
+├── book.json # Book config
+└── src # All markdown file
+    ├── assets/
+    |    └── App.js
+    └── example.md
+```
 
 ```bash
 $ bookmark -h
@@ -22,3 +36,11 @@ SUBCOMMANDS:
     help     Print this message or the help of the given subcommand(s)
     new      Start new book
 ```
+
+# Coming soon
+
+1. Light/Dark theme
+2. Sub-chapters
+3. Toggle sidebar
+4. Copy code snippet
+5. **Proper error hanlding & error message**
