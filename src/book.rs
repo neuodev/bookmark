@@ -55,7 +55,7 @@ impl Book {
         
         fs::create_dir(dist).unwrap();
         Book::move_assets(&config.dist_dir);
-        let sidebar = Book::make_sidebar(&config.pages);
+        let sidebar = Book::make_sidebar(&config.pages, &config.bookname);
         
         let mut handlers = vec![];
         for page in config.pages {
@@ -97,7 +97,7 @@ impl Book {
         fs::write(path, css).unwrap();
     }
 
-    fn make_sidebar(pages: &Vec<Page>) -> String {
+    fn make_sidebar(pages: &Vec<Page>, title: &str) -> String {
         let list_item = include_str!("../assets/templates/chapter.html").to_string();
         let mut chapters_list = vec![];
 
@@ -110,7 +110,8 @@ impl Book {
             chapters_list.push(item)
         });
 
-        let sidebar = include_str!("../assets/templates/sidebar.html").to_string();
-        sidebar.replace("$chapters", &chapters_list.join(""))
+        let mut sidebar = include_str!("../assets/templates/sidebar.html").to_string();
+        sidebar = sidebar.replace("$chapters", &chapters_list.join(""));
+        sidebar.replace("$title", title)
     }
 }
