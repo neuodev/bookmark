@@ -73,7 +73,7 @@ a {
 }
 
 .sidebar {
-  @apply bg-gray-100 w-96 max-w-xs pt-5 pb-12 overflow-auto;
+  @apply bg-gray-100 w-96 max-w-xs pt-5 pb-12 overflow-auto shadow-2xl;
 }
 
 .title {
