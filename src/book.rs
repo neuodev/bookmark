@@ -48,7 +48,7 @@ impl Book {
 
         let dist = Path::new(&config.dist_dir);
 
-        if dist.exists() {
+        if !dist.exists() {
             fs::create_dir(dist).unwrap();
         }
 
@@ -56,7 +56,7 @@ impl Book {
         for page in config.pages {
             let root = config.root_dir.clone();
             let dist = config.dist_dir.clone();
-            let handler = thread::Builder::new().name(page.title).spawn(move || {
+            let handler = thread::Builder::new().name(page.title.clone()).spawn(move || {
                 let file = format!("./{}/{}", root, page.path);
                 let path = Path::new(&file);
                 let doc = Document::from_file(path);
