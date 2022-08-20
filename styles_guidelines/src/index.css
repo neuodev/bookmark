@@ -49,7 +49,7 @@ li {
 }
 
 ol {
-  @apply list-inside list-disc mb-8;
+  @apply list-inside list-decimal mb-8;
 }
 
 quote {
@@ -73,11 +73,11 @@ a {
 }
 
 .sidebar {
-  @apply bg-gray-100 w-96 py-5;
+  @apply bg-gray-100 w-96 max-w-xs pt-5 pb-12 overflow-auto;
 }
 
 .title {
-  @apply text-lg px-4 hover:text-blue-500 cursor-pointer transition-colors duration-200 font-bold text-gray-800;
+  @apply text-lg px-4 hover:text-blue-500 cursor-pointer transition-colors duration-100 font-bold text-gray-800;
 }
 
 .chapters {
@@ -85,5 +85,5 @@ a {
 }
 
 .chapter {
-  @apply py-1.5 px-4 hover:bg-gray-200 cursor-pointer hover:text-blue-500 transition-colors duration-200 select-none text-gray-800;
+  @apply py-1.5 px-4 hover:bg-gray-200 cursor-pointer hover:text-blue-500 transition-colors duration-200 select-none text-gray-800 w-full truncate;
 }
