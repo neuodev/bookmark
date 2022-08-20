@@ -87,3 +87,11 @@ a {
 .chapter {
   @apply py-1.5 px-4 hover:bg-gray-200 cursor-pointer hover:text-blue-500 transition-colors duration-200 select-none text-gray-800 w-full truncate;
 }
+
+.container {
+  @apply w-screen h-screen bg-gray-50 flex flex-row overflow-hidden;
+}
+
+.content {
+  @apply p-12 overflow-y-scroll overflow-x-hidden w-full;
+}
