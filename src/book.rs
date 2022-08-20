@@ -49,9 +49,11 @@ impl Book {
 
         let dist = Path::new(&config.dist_dir);
 
-        if !dist.exists() {
-            fs::create_dir(dist).unwrap();
+        if dist.exists() {
+            fs::remove_dir_all(dist).unwrap();
         }
+        
+        fs::create_dir(dist).unwrap();
 
         let mut handlers = vec![];
         for page in config.pages {
@@ -63,7 +65,7 @@ impl Book {
                 let doc = Document::from_file(path);
                 let output_path = md_to_html(&format!("./{}/{}", dist, page.path));
                 doc.save(&output_path);
-                
+
                 page.title
             }).unwrap();
 
