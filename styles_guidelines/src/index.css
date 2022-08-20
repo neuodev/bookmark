@@ -1,13 +1,65 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+html {
+  @apply font-rubik;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+h1 {
+  @apply text-6xl border-b-2 border-gray-100 leading-normal mb-4 capitalize text-gray-800;
+}
+
+h2 {
+  @apply text-5xl border-b-2 border-gray-100 leading-normal mb-4 capitalize text-gray-800;
+}
+
+h3 {
+  @apply text-4xl leading-normal mb-4 capitalize text-gray-800;
+}
+
+h4 {
+  @apply text-3xl leading-normal mb-4 capitalize text-gray-800;
+}
+
+h5 {
+  @apply text-2xl leading-normal mb-4 capitalize text-gray-800;
+}
+
+h6 {
+  @apply text-xl leading-normal mb-4 capitalize text-gray-800;
+}
+
+p {
+  @apply leading-8 mb-4;
+}
+
+ul {
+  @apply list-disc list-inside mb-8;
+}
+
+li {
+  @apply mb-2;
+}
+
+ol {
+  @apply list-inside list-disc mb-8;
+}
+
+quote {
+  @apply py-2 bg-zinc-200 w-full block border-l-4 border-zinc-500 text-left px-4 text-zinc-800;
+}
+
+strong {
+  @apply font-bold;
+}
+
+i {
+  @apply italic;
+}
+
+a {
+  @apply text-blue-500 hover:underline;
 }
