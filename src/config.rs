@@ -19,7 +19,7 @@ impl Config {
         self.author = author
     }
 
-    pub fn update_booknmae(&mut self, name: String) {
+    pub fn update_bookname(&mut self, name: String) {
         self.bookname = name
     }
 
