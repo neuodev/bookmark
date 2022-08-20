@@ -51,7 +51,7 @@ impl Document {
             .collect::<Vec<String>>()
             .join("\n");
 
-        let html_doc = include_str!("../assets/html/base.html");
+        let html_doc = include_str!("../assets/base.html");
 
         replace_by_tag(html_doc, &html_body, "body")
     }

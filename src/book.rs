@@ -54,7 +54,8 @@ impl Book {
         }
         
         fs::create_dir(dist).unwrap();
-
+        Book::move_assets(&config.dist_dir);
+        
         let mut handlers = vec![];
         for page in config.pages {
             let root = config.root_dir.clone();
@@ -76,5 +77,21 @@ impl Book {
             let page = handler.join().unwrap();
             println!("[Done] {}", page);
         }
+    }
+
+
+    /// Move css / js into the output directory
+    fn move_assets(dist: &str) {
+        let css = include_str!("../assets/style.css");
+
+        let ouput_dir =  Path::new(dist);
+
+        if !ouput_dir.exists() {
+            fs::create_dir_all(dist).unwrap();
+        }
+
+        let path = format!("{}/style.css", dist);
+
+        fs::write(path, css).unwrap();
     }
 }
