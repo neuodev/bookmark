@@ -1,5 +1,7 @@
-use inquire::Text;
+use inquire::{validator::Validation, Text};
 use std::{fs, path::Path};
+
+use crate::config::Config;
 
 pub struct Book;
 
@@ -14,19 +16,27 @@ impl Book {
 
         fs::create_dir_all(format!("./{name}/src")).unwrap();
 
-        let mut book_name = Text::new("Choose a book name")
+        let book_name = Text::new("Choose a book name")
             .with_help_message("Will be displayed at the book cover")
             .with_default(name)
             .with_placeholder(name)
             .prompt()
             .expect("Failed to get user input");
 
-        let mut author = Text::new("Author name")
+        let author = Text::new("Author name")
+            .with_validator(|input: &str| {
+                match input.len() {
+                    0 =>  Ok(Validation::Invalid("Author name is required".into())),
+                    _ => Ok(Validation::Valid)
+                }
+                
+            })
             .prompt()
             .expect("Failed to get user input");
 
-        let book_config = include_str!("../assets/book.json");
-
-        fs::write(format!("./{}/book.json", name), book_config).unwrap();
+        let mut config = Config::new();
+        config.update_author(author);
+        config.update_bookname(book_name);
+        config.save(format!("./{}/book.json", name));
     }
 }

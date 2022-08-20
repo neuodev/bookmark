@@ -1,19 +1,18 @@
-use std::{path::Path, fs};
+use serde::{Deserialize, Serialize};
 use serde_json;
-use serde::{Serialize, Deserialize};
+use std::{fs, path::Path};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
     bookname: String,
-    author: String
+    author: String,
 }
 
 impl Config {
-    pub fn new<P: AsRef<Path>>(path: P) -> Self {
+    pub fn new() -> Self {
         let json_config = include_str!("../assets/book.json");
         serde_json::from_str(json_config).unwrap()
     }
-
 
     pub fn update_author(&mut self, author: String) {
         self.author = author
@@ -24,10 +23,7 @@ impl Config {
     }
 
     pub fn save<P: AsRef<Path>>(&self, path: P) {
-        let json = serde_json::to_string(self).unwrap();
+        let json = serde_json::to_string_pretty(self).unwrap();
         fs::write(path, json).unwrap();
     }
 }
-
-
-
