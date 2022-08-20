@@ -16,10 +16,9 @@ pub fn replace_html(doc: &str, content: &str, sidebar: &str) -> String {
     doc.replace(sidebar_placholder, sidebar)
 }
 
-
 pub fn md_to_html(file: &str) -> String {
     let path = Path::new(file);
-    
+
     let ext = path.extension().unwrap();
 
     if ext != "md" {
@@ -27,7 +26,7 @@ pub fn md_to_html(file: &str) -> String {
     }
 
     let mut parts = file.split(".").collect::<Vec<&str>>();
-    let last_idx  = parts.len() - 1;
+    let last_idx = parts.len() - 1;
     let html_ext = parts[last_idx].replace("md", "html");
     parts[last_idx] = html_ext.as_str();
 
@@ -43,7 +42,7 @@ mod test {
         let paths = [
             ("README.md", "README.html"),
             ("./src/rust.md", "./src/rust.html"),
-            ("./src/file.md.md", "./src/file.md.html")
+            ("./src/file.md.md", "./src/file.md.html"),
         ];
 
         paths.into_iter().for_each(|(input, output)| {

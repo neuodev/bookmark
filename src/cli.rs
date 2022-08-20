@@ -43,7 +43,7 @@ impl Cli {
                     name: book_name.into(),
                     force,
                 }
-            },
+            }
             Some(("build", _)) => Action::Build,
             _ => todo!(),
         }
@@ -52,5 +52,5 @@ impl Cli {
 
 pub enum Action {
     NewBook { name: String, force: bool },
-    Build
+    Build,
 }

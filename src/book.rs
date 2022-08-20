@@ -1,9 +1,9 @@
-use inquire::{validator::Validation, Text};
-use std::{fs, path::Path};
-use std::thread;
 use crate::config::{Config, Page};
 use crate::documents::Document;
 use crate::utils::md_to_html;
+use inquire::{validator::Validation, Text};
+use std::thread;
+use std::{fs, path::Path};
 
 pub struct Book;
 
@@ -52,25 +52,28 @@ impl Book {
         if dist.exists() {
             fs::remove_dir_all(dist).unwrap();
         }
-        
+
         fs::create_dir(dist).unwrap();
         Book::move_assets(&config.dist_dir);
         let sidebar = Book::make_sidebar(&config.pages, &config.bookname);
-        
+
         let mut handlers = vec![];
         for page in config.pages {
             let root = config.root_dir.clone();
             let dist = config.dist_dir.clone();
             let sidebar = sidebar.clone();
-            let handler = thread::Builder::new().name(page.title.clone()).spawn(move || {
-                let file = format!("./{}/{}", root, page.path);
-                let path = Path::new(&file);
-                let doc = Document::from_file(path);
-                let output_path = md_to_html(&format!("./{}/{}", dist, page.path));
-                doc.save(&output_path, &sidebar);
+            let handler = thread::Builder::new()
+                .name(page.title.clone())
+                .spawn(move || {
+                    let file = format!("./{}/{}", root, page.path);
+                    let path = Path::new(&file);
+                    let doc = Document::from_file(path);
+                    let output_path = md_to_html(&format!("./{}/{}", dist, page.path));
+                    doc.save(&output_path, &sidebar);
 
-                page.title
-            }).unwrap();
+                    page.title
+                })
+                .unwrap();
 
             handlers.push(handler);
         }
@@ -81,12 +84,11 @@ impl Book {
         }
     }
 
-
     /// Move css / js into the output directory
     fn move_assets(dist: &str) {
         let css = include_str!("../assets/style.css");
 
-        let ouput_dir =  Path::new(dist);
+        let ouput_dir = Path::new(dist);
 
         if !ouput_dir.exists() {
             fs::create_dir_all(dist).unwrap();

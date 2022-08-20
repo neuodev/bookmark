@@ -424,7 +424,10 @@ impl CodeBlock {
     pub fn into_html(&self) -> String {
         let code = self.lines.join("<br/>");
         // See https://highlightjs.org/
-        format!("<pre><code class='language-{}'>{}</code></pre>", self.lang, code)
+        format!(
+            "<pre><code class='language-{}'>{}</code></pre>",
+            self.lang, code
+        )
     }
 }
 
