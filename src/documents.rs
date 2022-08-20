@@ -1,17 +1,16 @@
 use crate::{
     node::Node,
-    tokens::{CodeBlock, Heading, LineBreak, List, Quote, Paragraph},
+    tokens::{CodeBlock, Heading, LineBreak, List, Paragraph, Quote},
 };
 use std::{fs, path::Path};
 
 #[derive(Debug)]
 pub struct Document {
-    name: String,
     nodes: Vec<Node>,
 }
 
 impl Document {
-    pub fn from_file<P: AsRef<Path>>(path: P) {
+    pub fn from_file<P: AsRef<Path>>(path: P) -> Document {
         let file = fs::read_to_string(path).unwrap();
         let lines = file.split("\n").collect::<Vec<&str>>();
 
@@ -40,6 +39,6 @@ impl Document {
             idx += 1;
         }
 
-        println!("{:#?}", nodes)
+        Document { nodes }
     }
 }

@@ -8,5 +8,5 @@ use std::fs;
 use documents::Document;
 
 fn main() {
-    Document::from_file("./examples/README.md");
+    let document = Document::from_file("./examples/README.md");
 }

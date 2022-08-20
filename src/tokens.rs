@@ -115,6 +115,29 @@ impl InlineToken {
 
         text
     }
+
+    fn apply_tokens(line: &str, tokens: &Vec<InlineToken>) {
+        let mut new_line = line.to_string();
+        tokens.into_iter().enumerate().for_each(|(idx, t)| {
+            let html: String;
+            match t {
+                InlineToken::Bold { value, .. } => html = format!("<strong>{}</strong>", value),
+                InlineToken::Code { value, .. } => {
+                    html = format!("<span class='inline-code'>{}</span>", value)
+                }
+                InlineToken::Image { alt, src, .. } => {
+                    html = format!("<img src='{}' alt='{}'/>", src, alt);
+                }
+                InlineToken::Italic { value, .. } => {
+                    html = format!("<i>{}</i>", value);
+                }
+                InlineToken::Link { href, text, .. } => {
+                    html = format!("<a href='{}'>{}</a>", href, text)
+                }
+            }
+            new_line = new_line.replace(&format!("<${}>", idx + 1), &html);
+        });
+    }
 }
 
 #[derive(Debug)]
