@@ -2,3 +2,5 @@
 examples/
 *.js
 /output
+/styles_guidelines/node_modules
+/styles_guidelines/build
