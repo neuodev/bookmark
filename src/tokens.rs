@@ -402,7 +402,7 @@ impl CodeBlock {
                 break;
             }
 
-            if lines[end_idx] == "```" {
+            if lines[end_idx].trim() == "```" {
                 break;
             }
         }
@@ -411,6 +411,8 @@ impl CodeBlock {
             .into_iter()
             .map(|l| l.to_string())
             .collect();
+
+            println!("lines: {:#?}", code_lines);
 
         (
             Some(CodeBlock {
@@ -423,8 +425,7 @@ impl CodeBlock {
 
     pub fn into_html(&self) -> String {
         let code = self.lines.join("<br/>");
-
-        format!("<code class={}>{}</code>", self.lang, code)
+        format!("<code class='language-{}'>{}</code>", self.lang, code)
     }
 }
 

@@ -26,7 +26,7 @@ impl Document {
                 nodes.push(Node::Heading(heading));
             } else if let (Some(list), curr_idx) = List::new(&lines, idx) {
                 nodes.push(Node::List(list));
-                idx = curr_idx;
+                idx = curr_idx - 1;
             } else if let (Some(code_block), curr_idx) = CodeBlock::new(&lines, idx) {
                 nodes.push(Node::CodeBlock(code_block));
                 idx = curr_idx;
