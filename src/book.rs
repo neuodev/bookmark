@@ -1,5 +1,5 @@
 use inquire::{validator::Validation, Text};
-use std::{fs, path:&:Path};
+use std::{fs, path::Path};
 use std::thread;
 use crate::config::Config;
 use crate::documents::Document;
@@ -46,17 +46,18 @@ impl Book {
 
         let config = Config::from_file(config_path);
 
-        let dist = Path::new(config.dist_dir);
+        let dist = Path::new(&config.dist_dir);
 
-        if dist.exist() {
-            fs::create_dir(dist);
+        if dist.exists() {
+            fs::create_dir(dist).unwrap();
         }
 
         for page in config.pages {
             let root = config.root_dir.clone();
             let dist = config.dist_dir.clone();
             thread::spawn(move || {
-                let path = Path::new(&format!("./{}/{}", root, page.path));
+                let file = format!("./{}/{}", root, page.path);
+                let path = Path::new(&file);
                 let doc = Document::from_file(path);
                 doc.save(&format!("./{}/{}.html", dist, page.path))
             });
