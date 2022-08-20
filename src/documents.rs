@@ -50,4 +50,10 @@ impl Document {
         replace_by_tag(html_doc, &html_body, "body")
     }
 
+    pub fn save<P: AsRef<Path>>(&self, path: P) {
+        let html = self.into_html();
+
+        fs::write(path, html).unwrap();
+    }
+
 }
