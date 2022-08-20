@@ -257,7 +257,6 @@ pub struct List {
 
 impl List {
     pub fn new(lines: &Vec<&str>, mut idx: usize) -> (Option<Self>, usize) {
-        println!("new list");
         let mut items = vec![];
         let mut list_type = ListType::Ordered;
 
@@ -302,8 +301,8 @@ impl List {
         let re = Regex::new(r"^(?P<idx>[0-9]+)\.").unwrap();
 
         match line {
-            line if line.starts_with('-') => Some(ListType::Unordered),
-            line if line.starts_with('*') => Some(ListType::Unordered),
+            line if line.starts_with("- ") => Some(ListType::Unordered),
+            line if line.starts_with("* ") => Some(ListType::Unordered),
             line if re.captures(line).is_some() => Some(ListType::Ordered),
             _ => None,
         }
@@ -313,83 +312,100 @@ impl List {
 #[derive(Debug)]
 pub struct CodeBlock {
     lang: String,
-    lines: Vec<String>
+    lines: Vec<String>,
 }
 
 impl CodeBlock {
     pub fn new(lines: &Vec<&str>, idx: usize) -> (Option<Self>, usize) {
         let line = lines[idx];
-        // Regex to match the first line in a code block 
+        // Regex to match the first line in a code block
         let re = Regex::new(r"`{3}(?P<lang>[^\n]+)").unwrap();
-        
+
         let caps = match re.captures(line) {
             Some(c) => c,
-            None => return (None, idx)
+            None => return (None, idx),
         };
 
         let mut end_idx = idx;
 
         loop {
-            end_idx+= 1;
+            end_idx += 1;
             if end_idx >= lines.len() {
                 break;
             }
-
 
             if lines[end_idx] == "```" {
                 break;
             }
         }
 
-        let code_lines = (&lines[idx+1..end_idx]).into_iter().map(|l| l.to_string()).collect();
-        
+        let code_lines = (&lines[idx + 1..end_idx])
+            .into_iter()
+            .map(|l| l.to_string())
+            .collect();
 
-        
-        (Some(CodeBlock {
-            lang: caps["lang"].to_string(),
-            lines: code_lines,
-        }), end_idx)
+        (
+            Some(CodeBlock {
+                lang: caps["lang"].to_string(),
+                lines: code_lines,
+            }),
+            end_idx,
+        )
     }
 }
 
 #[derive(Debug)]
 pub struct QuoteLine {
     text: String,
-    inline_token: Vec<InlineToken>
+    inline_token: Vec<InlineToken>,
 }
 
 impl QuoteLine {
     fn new(text: &str) -> Self {
-        QuoteLine { text: text.to_string(), inline_token: vec![] }
+        QuoteLine {
+            text: text.to_string(),
+            inline_token: vec![],
+        }
     }
 }
 
 #[derive(Debug)]
 pub struct Quote {
-    lines: Vec<QuoteLine>
+    lines: Vec<QuoteLine>,
 }
 
 impl Quote {
     pub fn new(lines: &Vec<&str>, idx: usize) -> (Option<Self>, usize) {
-        let line  = lines[idx].trim();
+        let line = lines[idx].trim();
 
         if !line.starts_with(">") {
-            return (None, idx)
+            return (None, idx);
         }
 
         let mut end_idx = idx;
         loop {
             end_idx += 1;
-            if end_idx >= lines.len() || !lines[end_idx].starts_with(">") {break;}
+            if end_idx >= lines.len() || !lines[end_idx].starts_with(">") {
+                break;
+            }
         }
 
-
-        let quote_lines = lines[idx..end_idx].into_iter().map(|&l| QuoteLine::new(l)).collect();
-        (Some(Quote{
-            lines: quote_lines,
-        }), end_idx)
+        let quote_lines = lines[idx..end_idx]
+            .into_iter()
+            .map(|&l| QuoteLine::new(l))
+            .collect();
+        (Some(Quote { lines: quote_lines }), end_idx)
     }
 }
 
+#[derive(Debug)]
 pub struct LineBreak;
 
+impl LineBreak {
+    pub fn new(line: &str) -> Option<LineBreak> {
+        if line.trim().len() == 0 {
+            return Some(LineBreak);
+        }
+        None
+    }
+}
