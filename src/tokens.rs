@@ -412,8 +412,6 @@ impl CodeBlock {
             .map(|l| l.to_string())
             .collect();
 
-            println!("lines: {:#?}", code_lines);
-
         (
             Some(CodeBlock {
                 lang: caps["lang"].to_string(),
@@ -425,7 +423,8 @@ impl CodeBlock {
 
     pub fn into_html(&self) -> String {
         let code = self.lines.join("<br/>");
-        format!("<code class='language-{}'>{}</code>", self.lang, code)
+        // See https://highlightjs.org/
+        format!("<pre><code class='language-{}'>{}</code></pre>", self.lang, code)
     }
 }
 

@@ -1,7 +1,7 @@
 use crate::{
     node::Node,
     tokens::{CodeBlock, Heading, LineBreak, List, Paragraph, Quote},
-    utils::replace_by_tag,
+    utils::replace_html,
 };
 use std::{fs, path::Path};
 
@@ -43,7 +43,7 @@ impl Document {
         Document { nodes }
     }
 
-    pub fn into_html(&self) -> String {
+    pub fn into_html(&self, sidebar: &str) -> String {
         let html_body = self
             .nodes
             .iter()
@@ -53,11 +53,11 @@ impl Document {
 
         let html_doc = include_str!("../assets/templates/base.html");
 
-        replace_by_tag(html_doc, &html_body, "body")
+        replace_html(html_doc, &html_body, sidebar)
     }
 
-    pub fn save<P: AsRef<Path>>(&self, path: P) {
-        let html = self.into_html();
+    pub fn save<P: AsRef<Path>>(&self, path: P, sidebar: &str) {
+        let html = self.into_html(sidebar);
 
         fs::write(path, html).unwrap();
     }

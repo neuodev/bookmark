@@ -1,7 +1,7 @@
 use inquire::{validator::Validation, Text};
 use std::{fs, path::Path};
 use std::thread;
-use crate::config::Config;
+use crate::config::{Config, Page};
 use crate::documents::Document;
 use crate::utils::md_to_html;
 
@@ -55,17 +55,19 @@ impl Book {
         
         fs::create_dir(dist).unwrap();
         Book::move_assets(&config.dist_dir);
+        let sidebar = Book::make_sidebar(&config.pages);
         
         let mut handlers = vec![];
         for page in config.pages {
             let root = config.root_dir.clone();
             let dist = config.dist_dir.clone();
+            let sidebar = sidebar.clone();
             let handler = thread::Builder::new().name(page.title.clone()).spawn(move || {
                 let file = format!("./{}/{}", root, page.path);
                 let path = Path::new(&file);
                 let doc = Document::from_file(path);
                 let output_path = md_to_html(&format!("./{}/{}", dist, page.path));
-                doc.save(&output_path);
+                doc.save(&output_path, &sidebar);
 
                 page.title
             }).unwrap();
@@ -93,5 +95,22 @@ impl Book {
         let path = format!("{}/style.css", dist);
 
         fs::write(path, css).unwrap();
+    }
+
+    fn make_sidebar(pages: &Vec<Page>) -> String {
+        let list_item = include_str!("../assets/templates/chapter.html").to_string();
+        let mut chapters_list = vec![];
+
+        pages.into_iter().for_each(|page| {
+            let mut item = list_item.clone();
+            let path = md_to_html(&page.path);
+            item = item.replace("$href", &path);
+            item = item.replace("$text", &page.title);
+
+            chapters_list.push(item)
+        });
+
+        let sidebar = include_str!("../assets/templates/sidebar.html").to_string();
+        sidebar.replace("$chapters", &chapters_list.join(""))
     }
 }

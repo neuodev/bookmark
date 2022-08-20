@@ -2,14 +2,18 @@ use std::path::Path;
 
 use regex::Regex;
 
-pub fn replace_by_tag(doc: &str, by: &str, tag: &str) -> String {
-    let re = Regex::new(&format!(r"<{t}>(?P<text>[\s\S]*)</{t}>", t = tag)).unwrap();
+pub fn replace_html(doc: &str, content: &str, sidebar: &str) -> String {
+    let re_content = Regex::new(r#"<div class="content">(?P<text>[\s\S][^<]*?)</div>"#).unwrap();
+    let re_sidebar = Regex::new(r#"<div class="sidebar">(?P<text>[\s\S][^<]*?)</div>"#).unwrap();
 
-    let caps = re.captures(doc).expect("Tag not found");
+    let content_caps = re_content.captures(doc).expect("Tag not found");
+    let sidebar_caps = re_sidebar.captures(doc).expect("Tag not found");
 
-    let text = &caps["text"];
+    let content_placeholder = &content_caps["text"];
+    let sidebar_placholder = &sidebar_caps["text"];
 
-    doc.replace(text, by)
+    let doc = doc.replace(content_placeholder, content);
+    doc.replace(sidebar_placholder, sidebar)
 }
 
 
