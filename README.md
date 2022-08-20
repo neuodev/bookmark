@@ -8,6 +8,8 @@ Create static websites out of markdown
 
 # Useage
 
+To start using it make sure you read [install bookmark](./INSTALL.md)
+
 ## Start new project
 
 ```bash
@@ -19,6 +21,23 @@ my-book
     |    └── App.js
     └── example.md
 ```
+
+## Build your project
+
+from within your project folder where `book.json` lives you should call this command
+
+```bash
+$ bookmark build
+# Output
+[Done] Chapter 1 - Intorduction to rust
+[Done] Chapter 2 - Closures
+```
+
+Should see the generated website in the `dist` directory
+
+**note**: If you will commit your book into a repo make sure to ignore the `dist` folder as you can generate it anytime
+
+## Full commands list
 
 ```bash
 $ bookmark -h
