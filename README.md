@@ -6,6 +6,9 @@
 
 ## Todo
 
-1. Code block
-2. Block quotes
-3. line breaks
+1. Accept commands from the CLI
+   1. Add init command
+   2. Ouput working directory
+   3. Accept configs
+      1. Like project name
+      2. Author
