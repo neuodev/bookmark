@@ -35,7 +35,10 @@ impl Cli {
                 let book_name = sub_matches.get_one::<String>("name").expect("required");
                 let force = sub_matches.is_present("force");
                 println!(">>> {:#?}", force);
-                Action::NewBook { name: book_name.into(), force }
+                Action::NewBook {
+                    name: book_name.into(),
+                    force,
+                }
             }
             _ => todo!(),
         }
@@ -43,8 +46,5 @@ impl Cli {
 }
 
 pub enum Action {
-    NewBook {
-        name: String,
-        force: bool
-    },
+    NewBook { name: String, force: bool },
 }

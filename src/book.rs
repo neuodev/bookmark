@@ -15,7 +15,9 @@ impl Book {
 
         let book_config = include_str!("../assets/book.json");
 
-        let book_name = Text::new("Book name").prompt().expect("Failed to read user input");
+        let book_name = Text::new("Book name")
+            .prompt()
+            .expect("Failed to read user input");
 
         fs::write(format!("./{}/book.json", name), book_config).unwrap();
     }
