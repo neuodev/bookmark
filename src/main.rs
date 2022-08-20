@@ -19,7 +19,4 @@ fn main() {
         }   
         _ => {}
     }
-
-    // let document = Document::from_file("./examples/README.md");
-    // document.save("./output.html")
 }
