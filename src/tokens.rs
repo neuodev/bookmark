@@ -173,8 +173,8 @@ impl HeadingType {
         None
     }
 
-    pub fn get_tag_num(&self, ) -> u8 {
-        match  self {
+    pub fn get_tag_num(&self) -> u8 {
+        match self {
             HeadingType::H1 => 1,
             HeadingType::H2 => 2,
             HeadingType::H3 => 3,
@@ -245,10 +245,15 @@ impl Paragraph {
             inline_tokens,
         })
     }
+
+    pub fn into_html(&self) -> String {
+        let text = InlineToken::into_html(&self.text, &self.inline_tokens);
+        format!("<p>{}</p>", text,)
+    }
 }
 
 /// Support for <ol> </ol> or <ul> </ul>
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum ListType {
     Ordered,
     Unordered,
@@ -287,6 +292,11 @@ impl ListItem {
                 line.replace(raw_token, "").trim().into()
             }
         }
+    }
+
+    pub fn into_html(&self) -> String {
+        let text = InlineToken::into_html(&self.text, &self.inline_tokens);
+        format!("<li>{text}</li>")
     }
 }
 
@@ -348,6 +358,22 @@ impl List {
             line if re.captures(line).is_some() => Some(ListType::Ordered),
             _ => None,
         }
+    }
+
+    pub fn into_html(&self) -> String {
+        let list_items = self
+            .items
+            .iter()
+            .map(|list_item| list_item.into_html())
+            .collect::<Vec<String>>()
+            .join("\n");
+
+        let mut tag = "ol";
+        if self.list_type == ListType::Unordered {
+            tag = "ul"
+        }
+
+        format!("<{}>{}</{}>", tag, list_items, tag)
     }
 }
 
