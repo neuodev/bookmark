@@ -6,12 +6,18 @@ use std::{fs, path::Path};
 pub struct Config {
     bookname: String,
     author: String,
+    pages: Vec<Page>
 }
 
 impl Config {
     pub fn new() -> Self {
         let json_config = include_str!("../assets/book.json");
         serde_json::from_str(json_config).unwrap()
+    }
+
+    pub fn from_file<P: AsRef<Path>>(path: P) -> Self{
+        let json_config = fs::read_to_string(path).unwrap();
+        serde_json::from_str(&json_config).unwrap()
     }
 
     pub fn update_author(&mut self, author: String) {
@@ -26,4 +32,10 @@ impl Config {
         let json = serde_json::to_string_pretty(self).unwrap();
         fs::write(path, json).unwrap();
     }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Page {
+    title: String,
+    path: String
 }
