@@ -1,7 +1,8 @@
 use inquire::{validator::Validation, Text};
-use std::{fs, path::Path};
-
+use std::{fs, path:&:Path};
+use std::thread;
 use crate::config::Config;
+use crate::documents::Document;
 
 pub struct Book;
 
@@ -24,12 +25,9 @@ impl Book {
             .expect("Failed to get user input");
 
         let author = Text::new("Author name")
-            .with_validator(|input: &str| {
-                match input.len() {
-                    0 =>  Ok(Validation::Invalid("Author name is required".into())),
-                    _ => Ok(Validation::Valid)
-                }
-                
+            .with_validator(|input: &str| match input.len() {
+                0 => Ok(Validation::Invalid("Author name is required".into())),
+                _ => Ok(Validation::Valid),
             })
             .prompt()
             .expect("Failed to get user input");
@@ -38,5 +36,30 @@ impl Book {
         config.update_author(author);
         config.update_bookname(book_name);
         config.save(format!("./{}/book.json", name));
+    }
+
+    pub fn build() {
+        let config_path = Path::new("./book.json");
+        if !config_path.exists() {
+            panic!("Missing book.json")
+        }
+
+        let config = Config::from_file(config_path);
+
+        let dist = Path::new(config.dist_dir);
+
+        if dist.exist() {
+            fs::create_dir(dist);
+        }
+
+        for page in config.pages {
+            let root = config.root_dir.clone();
+            let dist = config.dist_dir.clone();
+            thread::spawn(move || {
+                let path = Path::new(&format!("./{}/{}", root, page.path));
+                let doc = Document::from_file(path);
+                doc.save(&format!("./{}/{}.html", dist, page.path))
+            });
+        }
     }
 }

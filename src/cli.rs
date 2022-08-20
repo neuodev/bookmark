@@ -24,6 +24,11 @@ impl Cli {
                             .help("Overwrite existing book with the same name"),
                     )
                     .arg_required_else_help(false),
+            )
+            .subcommand(
+                Command::new("build")
+                    .about("Combile markdown into HTML")
+                    .subcommand_required(false),
             );
         let args = app.get_matches();
         Cli { args }
@@ -34,12 +39,12 @@ impl Cli {
             Some(("new", sub_matches)) => {
                 let book_name = sub_matches.get_one::<String>("name").expect("required");
                 let force = sub_matches.is_present("force");
-                println!(">>> {:#?}", force);
                 Action::NewBook {
                     name: book_name.into(),
                     force,
                 }
-            }
+            },
+            Some(("build", _)) => Action::Build,
             _ => todo!(),
         }
     }
@@ -47,4 +52,5 @@ impl Cli {
 
 pub enum Action {
     NewBook { name: String, force: bool },
+    Build
 }

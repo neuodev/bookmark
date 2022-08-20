@@ -4,13 +4,13 @@ use std::{fs, path::Path};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
-    bookname: String,
-    author: String,
+    pub bookname: String,
+    pub author: String,
     #[serde(rename = "rootDir")]
-    root_dir: String,
+    pub root_dir: String,
     #[serde(rename = "distDir")]
-    dist_dir: String,
-    pages: Vec<Page>
+    pub dist_dir: String,
+    pub pages: Vec<Page>,
 }
 
 impl Config {
@@ -19,7 +19,7 @@ impl Config {
         serde_json::from_str(json_config).unwrap()
     }
 
-    pub fn from_file<P: AsRef<Path>>(path: P) -> Self{
+    pub fn from_file<P: AsRef<Path>>(path: P) -> Self {
         let json_config = fs::read_to_string(path).unwrap();
         serde_json::from_str(&json_config).unwrap()
     }
@@ -40,6 +40,6 @@ impl Config {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Page {
-    title: String,
-    path: String
+    pub title: String,
+    pub path: String,
 }
