@@ -1,6 +1,6 @@
 use crate::{
     node::Node,
-    tokens::{CodeBlock, Heading, LineBreak, List, Paragraph, Quote},
+    tokens::{CodeBlock, Heading, LineBreak, List, Paragraph, Quote}, utils::replace_by_tag,
 };
 use std::{fs, path::Path};
 
@@ -47,7 +47,7 @@ impl Document {
 
         let html_doc = include_str!("../assets/html/base.html");
 
-
+        replace_by_tag(html_doc, &html_body, "body");
 
         "".into()
     }

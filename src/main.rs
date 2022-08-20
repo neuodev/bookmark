@@ -9,4 +9,5 @@ use documents::Document;
 
 fn main() {
     let document = Document::from_file("./examples/README.md");
+    document.into_html();
 }
