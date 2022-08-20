@@ -1,42 +1,4 @@
-use std::borrow::Cow;
-
-use regex::{Captures, Match, Regex};
-
-#[derive(Debug)]
-pub enum BlockToken {
-    H1 {
-        text: String,
-        inline_tokens: Vec<InlineToken>,
-    },
-    H2 {
-        text: String,
-        inline_tokens: Vec<InlineToken>,
-    },
-    H3 {
-        text: String,
-        inline_tokens: Vec<InlineToken>,
-    },
-    H4 {
-        text: String,
-        inline_tokens: Vec<InlineToken>,
-    },
-    H5 {
-        text: String,
-        inline_tokens: Vec<InlineToken>,
-    },
-    H6 {
-        text: String,
-        inline_tokens: Vec<InlineToken>,
-    },
-    P {
-        text: String,
-        inline_tokens: Vec<InlineToken>,
-    },
-    Bold,
-    Italic,
-    Anchor,
-    Img,
-}
+use regex::{Captures, Regex};
 
 #[derive(Debug)]
 pub enum InlineToken {
@@ -44,7 +6,7 @@ pub enum InlineToken {
         href: String,
         text: String,
         raw: String,
-    }, // reg: \[(?P<text>[^\]]+)\]\((?P<href>[^\]]+)\)
+    },
     Bold {
         value: String,
         raw: String,
@@ -311,10 +273,6 @@ impl List {
                 continue;
             }
 
-            // if !line.trim().starts_with("-") {
-            //     break;
-            // }
-
             list_type = match List::get_list_type(&line) {
                 Some(t) => t,
                 None => break,
@@ -432,3 +390,6 @@ impl Quote {
         }), end_idx)
     }
 }
+
+pub struct LineBreak;
+

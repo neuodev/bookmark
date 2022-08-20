@@ -1,13 +1,11 @@
 #![allow(dead_code)]
 
 mod node;
+mod documents;
 mod tokens;
 
 use regex::Regex;
 use std::fs;
-use tokens::{List, Paragraph};
-
-use crate::tokens::{Heading, CodeBlock, Quote};
 
 fn main() {
     let file = fs::read_to_string("./examples/quotes.md").unwrap();
@@ -17,17 +15,17 @@ fn main() {
         .filter(|l| l != &"\r")
         .collect::<Vec<&str>>();
 
-    // println!("{:#?}", lines);
-    let mut idx = 0;
-    while idx < lines.len() {
-        let (quote, end_idx) = Quote::new(&lines, idx);
+   
+    // let mut idx = 0;
+    // while idx < lines.len() {
+    //     let (quote, end_idx) = Quote::new(&lines, idx);
 
-        if quote.is_some() {
-            idx = end_idx;
+    //     if quote.is_some() {
+    //         idx = end_idx;
 
-            println!("{:#?}", quote.unwrap())
-        } 
+    //         println!("{:#?}", quote.unwrap())
+    //     } 
 
-        idx += 1;
-    }
+    //     idx += 1;
+    // }
 }
