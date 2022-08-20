@@ -8,7 +8,6 @@ mod utils;
 
 use book::Book;
 use cli::{Action, Cli};
-use documents::Document;
 
 fn main() {
     let cli = Cli::new();
