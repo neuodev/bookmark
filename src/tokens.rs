@@ -116,7 +116,7 @@ impl InlineToken {
         text
     }
 
-    fn apply_tokens(line: &str, tokens: &Vec<InlineToken>) {
+    fn into_html(line: &str, tokens: &Vec<InlineToken>) -> String {
         let mut new_line = line.to_string();
         tokens.into_iter().enumerate().for_each(|(idx, t)| {
             let html: String;
@@ -137,6 +137,8 @@ impl InlineToken {
             }
             new_line = new_line.replace(&format!("<${}>", idx + 1), &html);
         });
+
+        new_line
     }
 }
 
@@ -170,6 +172,17 @@ impl HeadingType {
         }
         None
     }
+
+    pub fn get_tag_num(&self, ) -> u8 {
+        match  self {
+            HeadingType::H1 => 1,
+            HeadingType::H2 => 2,
+            HeadingType::H3 => 3,
+            HeadingType::H4 => 4,
+            HeadingType::H5 => 5,
+            _ => 6,
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -202,6 +215,12 @@ impl Heading {
         }
 
         None
+    }
+
+    pub fn into_html(&self) -> String {
+        let tag = self.h_type.get_tag_num();
+        let text = InlineToken::into_html(&self.text, &self.inline_tokens);
+        format!("<h{}>{}</h{}>", tag, text, tag)
     }
 }
 
