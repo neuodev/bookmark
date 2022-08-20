@@ -1,7 +1,9 @@
 {
   "bookname": "",
   "author": "",
+  "description": "",
   "rootDir": "./src",
   "distDir": "./dist",
+  "assetsDir": "./src/assets",
   "pages": []
 }

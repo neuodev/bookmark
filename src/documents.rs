@@ -58,7 +58,8 @@ impl Document {
 
     pub fn save<P: AsRef<Path>>(&self, path: P, sidebar: &str) {
         let html = self.into_html(sidebar);
-
+        // Move image if any
         fs::write(path, html).unwrap();
     }
+
 }

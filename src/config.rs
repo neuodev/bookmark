@@ -6,6 +6,9 @@ use std::{fs, path::Path};
 pub struct Config {
     pub bookname: String,
     pub author: String,
+    pub description: String,
+    #[serde(rename = "assetsDir")]
+    pub assets_dir: String,
     #[serde(rename = "rootDir")]
     pub root_dir: String,
     #[serde(rename = "distDir")]

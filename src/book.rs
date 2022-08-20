@@ -1,6 +1,6 @@
 use crate::config::{Config, Page};
 use crate::documents::Document;
-use crate::utils::md_to_html;
+use crate::utils::{md_to_html, copy_recursively};
 use inquire::{validator::Validation, Text};
 use std::thread;
 use std::{fs, path::Path};
@@ -54,7 +54,7 @@ impl Book {
         }
 
         fs::create_dir(dist).unwrap();
-        Book::move_assets(&config.dist_dir);
+        Book::move_assets(&config.dist_dir,  &config.assets_dir);
         let sidebar = Book::make_sidebar(&config.pages, &config.bookname);
 
         let mut handlers = vec![];
@@ -85,15 +85,15 @@ impl Book {
     }
 
     /// Move css / js into the output directory
-    fn move_assets(dist: &str) {
-        let css = include_str!("../assets/style.css");
-
+    fn move_assets(dist: &str, assets_dir: &str) {
         let ouput_dir = Path::new(dist);
-
         if !ouput_dir.exists() {
             fs::create_dir_all(dist).unwrap();
         }
-
+        
+        copy_recursively(assets_dir, format!("{dist}/assets")).unwrap();
+        
+        let css = include_str!("../assets/style.css");
         let path = format!("{}/style.css", dist);
 
         fs::write(path, css).unwrap();
@@ -116,4 +116,6 @@ impl Book {
         sidebar = sidebar.replace("$chapters", &chapters_list.join(""));
         sidebar.replace("$title", title)
     }
+
+
 }
