@@ -60,7 +60,7 @@ impl Book {
                 let file = format!("./{}/{}", root, page.path);
                 let path = Path::new(&file);
                 let doc = Document::from_file(path);
-                doc.save(&format!("./{}/{}.html", dist, page.path))
+                doc.save(&format!("./{}/{}.html", dist, page.path));
 
                 page.title
             });
