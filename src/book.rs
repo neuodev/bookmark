@@ -3,6 +3,7 @@ use std::{fs, path::Path};
 use std::thread;
 use crate::config::Config;
 use crate::documents::Document;
+use crate::utils::md_to_html;
 
 pub struct Book;
 
@@ -60,8 +61,9 @@ impl Book {
                 let file = format!("./{}/{}", root, page.path);
                 let path = Path::new(&file);
                 let doc = Document::from_file(path);
-                doc.save(&format!("./{}/{}.html", dist, page.path));
-
+                let output_path = md_to_html(&format!("./{}/{}", dist, page.path));
+                doc.save(&output_path);
+                
                 page.title
             }).unwrap();
 

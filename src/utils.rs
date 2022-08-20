@@ -13,7 +13,7 @@ pub fn replace_by_tag(doc: &str, by: &str, tag: &str) -> String {
 }
 
 
-pub fn md_to_html<'a>(file: &'a str) -> String {
+pub fn md_to_html(file: &str) -> String {
     let path = Path::new(file);
     
     let ext = path.extension().unwrap();
