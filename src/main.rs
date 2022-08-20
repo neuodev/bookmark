@@ -4,6 +4,7 @@ mod documents;
 mod node;
 mod tokens;
 mod utils;
+mod config;
 
 use book::Book;
 use cli::{Action, Cli};
