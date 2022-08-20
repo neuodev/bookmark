@@ -20,8 +20,8 @@ impl Document {
         while idx < lines.len() {
             let line = lines[idx];
 
-            if let Some(linebreak) = LineBreak::new(line) {
-                nodes.push(Node::LineBreak(linebreak));
+            if let Some(_) = LineBreak::new(line) {
+                // Should be ingored
             } else if let Some(heading) = Heading::new(line) {
                 nodes.push(Node::Heading(heading));
             } else if let (Some(list), curr_idx) = List::new(&lines, idx) {

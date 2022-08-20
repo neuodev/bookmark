@@ -8,7 +8,6 @@ pub enum Node {
     List(List),
     CodeBlock(CodeBlock),
     Quote(Quote),
-    LineBreak(LineBreak),
 }
 
 impl Node {
@@ -19,7 +18,6 @@ impl Node {
             Node::List(l) => l.into_html(),
             Node::Quote(q) => q.into_html(),
             Node::Heading(h) => h.into_html(),
-            Node::LineBreak(l) => l.into_html(),
         }
     }
 }

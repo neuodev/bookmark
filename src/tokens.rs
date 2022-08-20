@@ -502,8 +502,4 @@ impl LineBreak {
         }
         None
     }
-
-    pub fn into_html(&self) -> String {
-        "<br/>".into()
-    }
 }
