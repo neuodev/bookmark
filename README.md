@@ -63,3 +63,7 @@ SUBCOMMANDS:
 3. Toggle sidebar
 4. Copy code snippet
 5. **Proper error hanlding & error message**
+
+# Output example
+
+![example](./example.png)

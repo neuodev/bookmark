@@ -16,7 +16,7 @@ impl Book {
             fs::remove_dir_all(path).unwrap();
         }
 
-        fs::create_dir_all(format!("./{name}/src")).unwrap();
+        fs::create_dir_all(format!("./{name}/src/assets")).unwrap();
 
         let book_name = Text::new("Choose a book name")
             .with_help_message("Will be displayed at the book cover")
