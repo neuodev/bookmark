@@ -47,9 +47,7 @@ impl Document {
 
         let html_doc = include_str!("../assets/html/base.html");
 
-        replace_by_tag(html_doc, &html_body, "body");
-
-        "".into()
+        replace_by_tag(html_doc, &html_body, "body")
     }
 
 }
