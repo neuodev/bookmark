@@ -71,3 +71,19 @@ a {
 .inline-code {
   @apply bg-stone-300 text-stone-800 px-1 py-0.5 rounded-md;
 }
+
+.sidebar {
+  @apply bg-gray-100 w-96 py-5;
+}
+
+.title {
+  @apply text-lg px-4 hover:text-blue-500 cursor-pointer transition-colors duration-200 font-bold text-gray-800;
+}
+
+.chapters {
+  @apply list-none;
+}
+
+.chapter {
+  @apply py-1.5 px-4 hover:bg-gray-200 cursor-pointer hover:text-blue-500 transition-colors duration-200 select-none text-gray-800;
+}
