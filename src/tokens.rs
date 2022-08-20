@@ -420,21 +420,33 @@ impl CodeBlock {
             end_idx,
         )
     }
+
+
+    pub fn into_html(&self) -> String {
+        let code = self.lines.join("<br/>");
+
+        format!("<code class={}>{}</code>", self.lang, code)
+    }
 }
 
 #[derive(Debug)]
 pub struct QuoteLine {
     text: String,
-    inline_token: Vec<InlineToken>,
+    inline_tokens: Vec<InlineToken>,
 }
 
 impl QuoteLine {
-    fn new(text: &str) -> Self {
+    fn new(line: &str) -> Self {
+        let line = line.trim().to_string();
+        let inline_tokens = InlineToken::extract(&line);
+        let text = InlineToken::mask_tokens(line, &inline_tokens);
         QuoteLine {
-            text: text.to_string(),
-            inline_token: vec![],
+            text,
+            inline_tokens,
         }
     }
+
+    
 }
 
 #[derive(Debug)]
@@ -463,6 +475,10 @@ impl Quote {
             .map(|&l| QuoteLine::new(l))
             .collect();
         (Some(Quote { lines: quote_lines }), end_idx)
+    }
+
+    pub fn into_html(&self) -> String {
+        
     }
 }
 
