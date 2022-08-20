@@ -52,15 +52,25 @@ impl Book {
             fs::create_dir(dist).unwrap();
         }
 
+        let mut handlers = vec![];
         for page in config.pages {
             let root = config.root_dir.clone();
             let dist = config.dist_dir.clone();
-            thread::spawn(move || {
+            let handler = thread::spawn(move || {
                 let file = format!("./{}/{}", root, page.path);
                 let path = Path::new(&file);
                 let doc = Document::from_file(path);
                 doc.save(&format!("./{}/{}.html", dist, page.path))
+
+                page.title
             });
+
+            handlers.push(handler);
+        }
+
+        for handler in handlers {
+            let page = handler.join().unwrap();
+            println!("[Done] {}", page);
         }
     }
 }
