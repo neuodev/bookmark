@@ -8,6 +8,10 @@ html {
   @apply font-rubik;
 }
 
+body {
+  @apply w-screen h-screen overflow-hidden;
+}
+
 h1 {
   @apply text-6xl border-b-2 border-gray-100 leading-normal mb-4 capitalize text-gray-800;
 }
@@ -62,4 +66,8 @@ i {
 
 a {
   @apply text-blue-500 hover:underline;
+}
+
+.inline-code {
+  @apply bg-stone-300 text-stone-800 px-1 py-0.5 rounded-md;
 }
