@@ -10,3 +10,17 @@ pub enum Node {
     Quote(Quote),
     LineBreak(LineBreak),
 }
+
+
+impl Node {
+    pub fn into_html(&self) -> String {
+        match self {
+            Node::CodeBlock(code) => code.into_html(),
+            Node::Paragraph(p) => p.into_html(),
+            Node::List(l) => l.into_html(),
+            Node::Quote(q) => q.into_html(),
+            Node::Heading(h) => h.into_html(),
+            Node::LineBreak(l) => l.into_html(),
+        }
+    }
+}

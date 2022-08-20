@@ -1,7 +1,7 @@
 use regex::{Captures, Regex};
 
 #[derive(Debug)]
-pub enum Inline&Token {
+pub enum InlineToken {
     Link {
         href: String,
         text: String,
@@ -482,7 +482,7 @@ impl Quote {
     }
 
     pub fn into_html(&self) -> String {
-        let quote = self.lines.iter().map(|l| l.into_html()).collect::<Vec<String>>().join("\r")
+        let quote = self.lines.iter().map(|l| l.into_html()).collect::<Vec<String>>().join("\r");
 
         format!("<quote>{}<quote>", quote)
     }
@@ -497,5 +497,10 @@ impl LineBreak {
             return Some(LineBreak);
         }
         None
+    }
+
+
+    pub fn into_html(&self) -> String {
+        "<br/>".into()
     }
 }

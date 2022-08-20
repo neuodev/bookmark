@@ -41,4 +41,15 @@ impl Document {
 
         Document { nodes }
     }
+
+    pub fn into_html(&self) -> String {
+        let html_body = self.nodes.iter().map(|n| n.into_html()).collect::<Vec<String>>().join("\n");
+
+        let html_doc = include_str!("../assets/html/base.html");
+
+
+
+        "".into()
+    }
+
 }
